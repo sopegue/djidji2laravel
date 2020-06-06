@@ -83,7 +83,7 @@ class AnnonceController extends Controller
             $adss = Annonce::whereIn('ville',$ville)
             ->where('categorie', $request->input('selected'))
             ->where(function($query) use($search)  {
-              $query->Where('categorie', 'like', '%' .$search. '%')
+            $query->Where('categorie', 'like', '%' .$search. '%')
               ->orWhere('souscateg', 'like', '%' . $search . '%')
               ->orWhere('titre', 'like', '%' . $search . '%')
               ->orWhere('description', 'like', '%' . $search . '%');
