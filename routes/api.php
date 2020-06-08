@@ -45,6 +45,8 @@ Route::prefix('auth')->group(function () {
     Route::post('/user','UserController@index');
     Route::post('/annonce/look','AnnonceController@searchUs');
     Route::post('/annonce/lookcateg','AnnonceController@menuCateg');
+    Route::post('/annonce/looksouscateg','AnnonceController@sousCategSearch');
+    Route::post('/annonce/lookbywhat','AnnonceController@whatLook');
     Route::post('/annonce/numbyplace','AnnonceController@numByCateg');
     Route::post('/user/tokenS','UserController@tStore');
     Route::post('/user/check','UserController@checkToken');
