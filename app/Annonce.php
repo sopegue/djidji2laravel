@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Annonce extends Model
@@ -12,4 +12,13 @@ class Annonce extends Model
      * @var string
      */
     protected $table = 'annonce';
+
+      /**
+     * Get the user that owns the ad.
+     */
+
+    public function annonceur()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

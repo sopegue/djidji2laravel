@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Annonce;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -446,13 +447,42 @@ class AnnonceController extends Controller
      */
     public function store(Request $request)
     {
+        $count_categ=Annonce::where('categorie',$request->input('categ'))->count();
+        //$count_userAd=Annonce::where('use_id',$request->input('userId'))->count();
         $ad = new Annonce();
-        /* donner les champs de l'anonnce ajouté a ajouter */
+        $ad->categorie=$request->input('categ');
+        $ad->souscateg=$request->input('scateg');
+        $ad->description=$request->input('desc');
+        $ad->titre=$request->input('titre');
+        $ad->prix=$request->input('prix');
+        $ad->tel=$request->input('tel');
+        $ad->what=$request->input('isWhat');
+        $ad->ville=$request->input('ville');
+        $ad->nbcateg=$count_categ + 1;
+        $fname=array();
+        $myfile=$request->file;
+        foreach ($myfile as $file) {
+            array_push($fname,$file->hashName());
+            $file->storeAs('public/'.$request->input('user').'//annonces/',$file->hashName());
+        }
+        $pp=implode(",",$fname); 
+        $ad->pp=$pp;
+        $ad->use_id=$request->input('user');
         $ad->save();
-
-        return response(null, Response::HTTP_OK);
+        return response( $fname, Response::HTTP_OK);
     }
 
+
+    public function testfile(Request $request){
+        
+        //$files = $request->file;
+        $fname=array();
+        foreach ($request->file as $file) {
+            array_push($fname,$file->hashName());
+            $file->storeAs('//testok/',$file->hashName());
+        }
+        return response($fname, Response::HTTP_OK);
+    }
     /**
      * Display the specified resource.
      *

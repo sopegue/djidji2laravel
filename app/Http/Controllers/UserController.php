@@ -3,13 +3,80 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use \Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function pwdUpdate(Request $request)
+    {
+        $id=$request->input('user');
+        $user=User::find($id);
+        $isModified=0;
+        $currentpwd=$request->input('pwd');
+        $newpwd=$request->input('newpwd');
+        if (Hash::check($currentpwd, $user->password))
+        {
+            $isModified=2;
+            $user->password = Hash::make($newpwd);
+            // The passwords match...
+        }
+        $user->save();
+        return $isModified;
+    }
+    public function updateUser(Request $request)
+    {
+        $user=User::find($request->input('user'));
+        $count=User::where('email',$request->input('email'))->count();
+        if($user->email==$request->input('email'))
+        {
+            //$user->email=$request->input('email');
+            $user->Nom=$request->input('name');
+            $user->Prenom=$request->input('surname');
+            $user->ville=$request->input('ville');
+            $user->tel=$request->input('tel');
+        }
+        else{
+            $user->email=$request->input('email');
+            $user->Nom=$request->input('name');
+            $user->Prenom=$request->input('surname');
+            $user->ville=$request->input('ville');
+            $user->tel=$request->input('tel');
+        }
+        $user->save();
+        return response(null, Response::HTTP_OK);
+    }
+    public function checkExistance(Request $request){
+        $count=User::where('email',$request->input('email'))->count();
+        return $count;
+    }
+    public function checkExistanceUpdate(Request $request){
+       
+        $user=User::find($request->input('user'));
+        $count=User::where('email',$request->input('email'))->count();
+        if($user->email==$request->input('email'))
+            $count=0;
+        return $count;
+    }
+    public function updatePic(Request $request)
+    {
+        $id=$request->input('user');
+        $user=User::find($id);
+        $oldpic=$user->pp;
+        Storage::disk('public')->delete($id.'//profile/'.$oldpic);
+        $mypic=$request->file('file');
+        $extension=$mypic->getClientOriginalExtension();
+        $pp="user.{$extension}";
+        $mypic->storeAs('public/'.$id.'//profile/',$pp);
+        $user->pp=$pp;
+        $user->save();
+        return response(null, Response::HTTP_OK);
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +84,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $user=User::where('email',$request->input('email'))->first();
+        $user=User::where(['email'=>$request->input('email'),'email'=>$request->input('email')])->first();
         return response($user->jsonSerialize(), Response::HTTP_OK);
     }
 

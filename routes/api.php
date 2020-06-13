@@ -17,24 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-/*
-Route::prefix('auth')->group(function () {
-    Route::post('register', 'AuthController@register');
-    Route::post('login', 'AuthController@login');
-    Route::get('refresh', 'AuthController@refresh');
-    Route::group(['middleware' => 'auth:api'], function(){
-    Route::get('user', 'AuthController@user');
-    Route::post('logout', 'AuthController@logout');
-    });
-  });
-  
-  Route::group(['middleware' => 'auth:api'], function(){
-    // Users
-    Route::get('users', 'UserController@index')->middleware('isAdmin');
-    Route::get('users/{id}', 'UserController@show')->middleware('isAdminOrSelf');
-  });
-  
-  */
+/*for test */
+
+Route::post('/annonce/testfile','AnnonceController@testfile');
+
+/* end test */
     
     Route::resource('/user', 'UserController',['except' => ['index']]);
     Route::resource('/adresse', 'AdresseController');
@@ -43,13 +30,18 @@ Route::prefix('auth')->group(function () {
     Route::resource('/annonce', 'AnnonceController');
     Route::resource('/reset', 'ResetController');
     Route::post('/user','UserController@index');
+    Route::post('/user/UpdateUser','UserController@updateUser');
+    Route::post('/user/UpdatePic','UserController@updatePic');
     Route::post('/annonce/look','AnnonceController@searchUs');
     Route::post('/annonce/lookcateg','AnnonceController@menuCateg');
     Route::post('/annonce/looksouscateg','AnnonceController@sousCategSearch');
     Route::post('/annonce/lookbywhat','AnnonceController@whatLook');
     Route::post('/annonce/numbyplace','AnnonceController@numByCateg');
     Route::post('/user/tokenS','UserController@tStore');
+    Route::post('/user/pwdUpdate','UserController@pwdUpdate');
     Route::post('/user/check','UserController@checkToken');
+    Route::post('/user/checkUserExistance','UserController@checkExistance');
+    Route::post('/user/checkUserExistanceUpdate','UserController@checkExistanceUpdate');
     Route::group([
 
       'middleware' => 'api',

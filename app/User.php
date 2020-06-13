@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\Annonce;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +10,8 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
-    protected $fillable = ['email','password'];
+    protected $fillable = ['email','password','ville',
+    'pp','tel','Prenom','Nom'];
 
     // Rest omitted for brevity
 
@@ -24,6 +25,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
+     /**
+     * Get the ads for the user.
+     */
+    public function annonce()
+    {
+        return $this->hasMany('App\Annonce');
+    }
+
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *
@@ -32,11 +41,5 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
-    }
-    public function setPasswordAttribute($password)
-    {
-        if ( !empty($password) ) {
-            $this->attributes['password'] = bcrypt($password);
-        }
     }
 }

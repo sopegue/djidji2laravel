@@ -23,10 +23,35 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {   
-        $user = User::create([
-            'email'    => $request->input('email'),
-            'password' => $request->input('password'),
-        ]);
+        if($request->hasFile('pic')){
+            $file=$request->file('pic');
+            $extension=$file->getClientOriginalExtension();
+            $pp="user.{$extension}";
+            
+            $user = User::create([
+                'email'    => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+                'Nom'=>$request->input('name'),
+                'Prenom'=>$request->input('surname'),
+                'tel'=>$request->input('tel'),
+                'pp'=>$pp,
+                'ville'=>$request->input('ville'),
+            ]);
+            $new=User::where('email',$request->input('email'))->first();
+            $file->storeAs('public/'.$new->id.'//profile/',$pp);
+         
+        }
+        else{
+            $user = User::create([
+                'email'    => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+                'Nom'=>$request->input('name'),
+                'Prenom'=>$request->input('surname'),
+                'tel'=>$request->input('tel'),
+                'ville'=>$request->input('ville'),
+                'pp'=>'',
+            ]);
+        }
         return response(null, Response::HTTP_OK);
     }
 
@@ -40,7 +65,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         
-        $credentials =['email'=>$request->input('email'),'password'=>$request->input('password')]; //$request->only('email', 'password');
+        $credentials =$request->only('email', 'password');
         if ($token = $this->guard()->attempt($credentials)) {
             return $this->respondWithToken($token);
         }
