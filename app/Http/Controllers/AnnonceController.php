@@ -75,12 +75,12 @@ class AnnonceController extends Controller
     
             if($trier=="3"){
     
-                $adss = $adss->sortByDesc('added_at')->values();
+                $adss = $adss->sortByDesc('updated_at')->values();
         
             }
             if($trier=="4"){
                 
-                $adss = $adss->sortBy('added_at')->values();
+                $adss = $adss->sortBy('updated_at')->values();
         
             }
     
@@ -195,12 +195,12 @@ class AnnonceController extends Controller
 
         if($trier=="3"){
 
-            $adss = $adss->sortByDesc('added_at')->values();
+            $adss = $adss->sortByDesc('updated_at')->values();
     
         }
         if($trier=="4"){
             
-            $adss = $adss->sortBy('added_at')->values();
+            $adss = $adss->sortBy('updated_at')->values();
     
         }
 
@@ -266,12 +266,12 @@ class AnnonceController extends Controller
     
             if($trier=="3"){
     
-                $adss = $adss->sortByDesc('added_at')->values();
+                $adss = $adss->sortByDesc('updated_at')->values();
         
             }
             if($trier=="4"){
                 
-                $adss = $adss->sortBy('added_at')->values();
+                $adss = $adss->sortBy('updated_at')->values();
         
             }
     
@@ -392,12 +392,12 @@ class AnnonceController extends Controller
 
         if($trier=="3"){
 
-            $adss = $adss->sortByDesc('added_at')->values();
+            $adss = $adss->sortByDesc('updated_at')->values();
     
         }
         if($trier=="4"){
             
-            $adss = $adss->sortBy('added_at')->values();
+            $adss = $adss->sortBy('updated_at')->values();
     
         }
 
@@ -429,6 +429,41 @@ class AnnonceController extends Controller
         return response($adss, Response::HTTP_OK);
     }
 
+    public function adSaved(Request $request)
+    {
+        $current=$request->input('curPage');
+        $id=$request->input('user');
+        $tryads= User::find($id);
+        if($tryads){
+
+            $ads=$tryads->annonces;
+        
+            $count=$ads->count();
+            $total=$count;
+            if($count%12!=0){
+            if($count<12)
+                $count=1;
+            if($count>12)
+                $count=($count/12) + 1;
+            }
+            else
+                $count=$count/12;
+            
+            $ads = $ads->slice(($current-1)*12,12);
+            $adss["ads"]=$ads->jsonSerialize();
+            $adss["count"]=$count;
+            $adss["total"]=$total;
+
+            return response( $adss, Response::HTTP_OK);
+        }else{
+            $adss["ads"]=[];
+            $adss["count"]=0;
+            $adss["total"]=0;
+            return response( $adss, Response::HTTP_OK);
+        }
+            
+
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -437,6 +472,14 @@ class AnnonceController extends Controller
     public function create()
     {
         //
+    }
+
+    public function vAnnonce($id)
+    {
+        $ads=Annonce::find($id);
+        if($ads==null)
+            return response(null, Response::HTTP_OK);
+        return response($ads->jsonSerialize(), Response::HTTP_OK);
     }
 
     /**

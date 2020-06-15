@@ -28,9 +28,9 @@ class User extends Authenticatable implements JWTSubject
      /**
      * Get the ads for the user.
      */
-    public function annonce()
+    public function annonces()
     {
-        return $this->hasMany('App\Annonce');
+        return $this->hasMany('App\Annonce','use_id');
     }
 
     /**

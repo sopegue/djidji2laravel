@@ -132,6 +132,14 @@ class UserController extends Controller
         return response(null, Response::HTTP_OK);
     }
 
+    public function vUser($id)
+    {
+        $users = User::find($id);
+        if($users==null)
+            return response(null, Response::HTTP_OK);
+        return response($users->jsonSerialize(), Response::HTTP_OK);
+    }
+
     /**
      * Display the specified resource.
      *

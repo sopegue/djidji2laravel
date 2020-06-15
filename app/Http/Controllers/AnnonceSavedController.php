@@ -18,6 +18,14 @@ class AnnonceSavedController extends Controller
         return response(AnnonceSaved::where('use_id',Auth::user()->id)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
+    public function savedAdsCheck(Request $request)
+    {
+        $ads=AnnonceSaved::where(['use_id'=>$request->input('user'),'ann_id'=>$request->input('ad')])->first();
+        $count=0;
+        if($ads)
+            $count=$ads->count();
+        return $count;
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -36,7 +44,7 @@ class AnnonceSavedController extends Controller
      */
     public function store(Request $request)
     {
-        $ad=new Ann
+        $ad=new Ann;
     }
 
     /**

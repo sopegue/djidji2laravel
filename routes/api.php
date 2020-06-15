@@ -33,6 +33,14 @@ Route::post('/annonce/testfile','AnnonceController@testfile');
     Route::post('/user/UpdateUser','UserController@updateUser');
     Route::post('/user/UpdatePic','UserController@updatePic');
     Route::post('/annonce/look','AnnonceController@searchUs');
+
+    Route::post('/annonce/saved','AnnonceController@adSaved');
+
+    Route::get('/annonce/{id}','AnnonceController@vAnnonce');
+    Route::get('/user/{id}','UserController@vUser');
+
+    Route::post('/savedAdsCheck','AnnonceSavedController@savedAdsCheck');
+
     Route::post('/annonce/lookcateg','AnnonceController@menuCateg');
     Route::post('/annonce/looksouscateg','AnnonceController@sousCategSearch');
     Route::post('/annonce/lookbywhat','AnnonceController@whatLook');

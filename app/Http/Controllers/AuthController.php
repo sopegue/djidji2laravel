@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+
+
 
 class AuthController extends Controller
 {
@@ -42,6 +46,7 @@ class AuthController extends Controller
          
         }
         else{
+            
             $user = User::create([
                 'email'    => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
@@ -49,8 +54,11 @@ class AuthController extends Controller
                 'Prenom'=>$request->input('surname'),
                 'tel'=>$request->input('tel'),
                 'ville'=>$request->input('ville'),
-                'pp'=>'',
+                'pp'=>'user.png',
             ]);
+            $new=User::where('email',$request->input('email'))->first();
+            Storage::copy('public/images/profile/user.png', 'public/'.$new->id.'//profile/user.png');
+            //$file->storeAs('public/'.$new->id.'//profile/',$pp);
         }
         return response(null, Response::HTTP_OK);
     }
