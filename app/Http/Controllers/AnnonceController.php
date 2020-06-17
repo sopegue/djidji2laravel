@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Annonce;
+use App\AnnonceSaved;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -436,7 +437,47 @@ class AnnonceController extends Controller
         $tryads= User::find($id);
         if($tryads){
 
-            $ads=$tryads->annonces;
+            $ads=$tryads->annonces->sortByDesc('updated_at')->values();
+        
+            $count=$ads->count();
+            $total=$count;
+            if($count%12!=0){
+            if($count<12)
+                $count=1;
+            if($count>12)
+                $count=($count/12) + 1;
+            }
+            else
+                $count=$count/12;
+            
+            $ads = $ads->slice(($current-1)*12,12);
+            $adss["ads"]=$ads->jsonSerialize();
+            $adss["count"]=$count;
+            $adss["total"]=$total;
+
+            return response( $adss, Response::HTTP_OK);
+        }else{
+            $adss["ads"]=[];
+            $adss["count"]=0;
+            $adss["total"]=0;
+            return response( $adss, Response::HTTP_OK);
+        }
+            
+
+    }
+
+    public function myadSaved(Request $request)
+    {
+        $current=$request->input('curPage');
+        $adsid=array();
+        $id=$request->input('user');
+        $tryads= AnnonceSaved::where('use_id',$id)->get();
+        if($tryads){
+            foreach ($tryads as $saved) {
+                array_push($adsid,$saved->ann_id);
+            }
+
+            $ads=Annonce::whereIn('id',$adsid)->get();
         
             $count=$ads->count();
             $total=$count;

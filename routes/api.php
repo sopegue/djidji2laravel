@@ -35,6 +35,7 @@ Route::post('/annonce/testfile','AnnonceController@testfile');
     Route::post('/annonce/look','AnnonceController@searchUs');
 
     Route::post('/annonce/saved','AnnonceController@adSaved');
+    Route::post('/annonce/mysaved','AnnonceController@myadSaved');
 
     Route::get('/annonce/{id}','AnnonceController@vAnnonce');
     Route::get('/user/{id}','UserController@vUser');
