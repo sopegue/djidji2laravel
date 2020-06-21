@@ -22,20 +22,28 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/annonce/testfile','AnnonceController@testfile');
 
 /* end test */
-    
+
+    Route::post('/message/sending','MessageController@sendMessage');
+    //Route::post('/signalement','MessageController@sendMessage');
     Route::resource('/user', 'UserController',['except' => ['index']]);
     Route::resource('/adresse', 'AdresseController');
     Route::resource('/verify', 'VerificationController');
-    Route::resource('/emessage', 'EmessageController',['only' => ['store']]);
     Route::resource('/annonce', 'AnnonceController');
+    Route::resource('/signalement', 'SignalerController');
+    Route::resource('/sauvegarde', 'AnnonceSavedController');
     Route::resource('/reset', 'ResetController');
     Route::post('/user','UserController@index');
     Route::post('/user/UpdateUser','UserController@updateUser');
     Route::post('/user/UpdatePic','UserController@updatePic');
     Route::post('/annonce/look','AnnonceController@searchUs');
-
+    Route::post('/sauvegardedel', 'AnnonceSavedController@savedDel');
     Route::post('/annonce/saved','AnnonceController@adSaved');
+    Route::post('/delad','AnnonceController@delMyAd');
     Route::post('/annonce/mysaved','AnnonceController@myadSaved');
+    Route::post('/picDown','AnnonceController@picDown');
+    Route::post('/annonce/adtodell','AnnonceController@adtomod');
+
+    Route::post('/annonce/mod','AnnonceController@admodifying');
 
     Route::get('/annonce/{id}','AnnonceController@vAnnonce');
     Route::get('/user/{id}','UserController@vUser');

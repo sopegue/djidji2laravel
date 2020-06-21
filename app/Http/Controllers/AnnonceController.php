@@ -5,12 +5,25 @@ use Illuminate\Support\Facades\DB;
 use App\Annonce;
 use App\AnnonceSaved;
 use App\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AnnonceController extends Controller
 {
 
+    public function adtomod(Request $request)
+    {
+        $ads=Annonce::find($request->input('ad'));
+        if($ads==null)
+            return response(null, Response::HTTP_OK);
+        return response($ads->jsonSerialize(), Response::HTTP_OK);
+    }
+    public function delMyAd(Request $request)
+    {
+        Annonce::destroy($request->input('ad'));
+        return response(null, Response::HTTP_OK);
+    }
     public function numByCateg(Request $request){
         $count=0;
         $ville=array();
@@ -515,6 +528,50 @@ class AnnonceController extends Controller
         //
     }
 
+    public function admodifying(Request $request)
+    {
+        $id=$request->input('idad');
+        $ad=Annonce::find($id);
+        //$count_userAd=Annonce::where('use_id',$request->input('userId'))->count();
+        $ad->categorie=$request->input('categ');
+        $ad->souscateg=$request->input('scateg');
+        $ad->description=$request->input('desc');
+        $ad->titre=$request->input('titre');
+        $ad->prix=$request->input('prix');
+        $ad->tel=$request->input('tel');
+        $ad->what=$request->input('isWhat');
+        $ad->ville=$request->input('ville');
+        $old=$request->input('categ');
+        $new=$request->input('oldcateg');
+        if($old!=$new){
+            $count_categ=Annonce::where('categorie',$request->input('categ'))->count();
+            $ad->nbcateg=$count_categ + 1;
+        }
+        else{
+            $ad->nbcateg=$ad->nbcateg + 1;
+        }
+        if($request->hasFile('file')){
+        //del oldfile
+        $fdel=explode(",",$ad->pp);
+        foreach ($fdel as $value) {
+            Storage::delete('public/'.$request->input('user').'//annonces/'.$value);
+        }
+        $fname=array();
+        $myfile=$request->file;
+        foreach ($myfile as $file) {
+            array_push($fname,$file->hashName());
+            $file->storeAs('public/'.$request->input('user').'//annonces/',$file->hashName());
+        }
+        $pp=implode(",",$fname); 
+        $ad->pp=$pp;
+        }
+        $ad->save();
+        return response( null, Response::HTTP_OK);
+    }
+    public function picDown(Request $request)
+    {
+        return Storage::download('public/'.$request->input('user').'/annonces/'.$request->input('ad'));
+    }
     public function vAnnonce($id)
     {
         $ads=Annonce::find($id);

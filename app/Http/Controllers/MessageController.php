@@ -6,9 +6,28 @@ use App\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\contact;
+use App\Mail\contactMail;
+use App\Mail\MessageDeDjidji;
 class MessageController extends Controller
 {
+    public function sendMessage(Request $request)
+    {
+        $message=new Message();
+        if($request->has('user')){
+            $message->use_id=$request->input('user');
+        }
+        $message->name=$request->input('name');
+        $message->ann_id=$request->input('ad');
+        $message->email=$request->input('email');
+        $message->content=$request->input('message');
+        $message->to_user=$request->input('to_user');
+        $message->save();
+        Mail::to($request->input('toemail'))
+            ->send(new MessageDeDjidji($request));
+        return response(null, Response::HTTP_OK);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -88,7 +107,7 @@ class MessageController extends Controller
      */
     public function destroy($message)
     {
-        $sms = Message::query()->where('receiver',$message);})->get();
+       
         foreach ($sms as $beDel) {
             $beDel->delete();
         }

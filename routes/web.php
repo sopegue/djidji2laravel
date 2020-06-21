@@ -18,5 +18,10 @@ Route::get('/', function () {
 });
 Route::get('/mailing', function () {
     return view('contact');
+
+});
+Route::get('/message', function () {
+    return view('message');
+    
 });
 Route::get('/sendmail','contactController@index')->name('sendmail');

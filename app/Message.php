@@ -11,6 +11,6 @@ class Message extends Model
      *
      * @var string
      */
-    protected $table = 'message';
+    protected $table = 'mailing';
 
 }

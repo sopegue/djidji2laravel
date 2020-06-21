@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Response;
 use App\Signaler;
 use Illuminate\Http\Request;
 
@@ -33,12 +33,13 @@ class SignalerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request/* id annonce*/)
+    public function store(Request $request/* id annonce*/)
     {
         $sign=new Signaler();
-
-        //
-
+        if($request->has('user')){
+            $sign->use_id=$request->input('user');
+        }
+        $sign->ann_id=$request->input('ad');
         $sign->save();
         return response(null, Response::HTTP_OK);
     }

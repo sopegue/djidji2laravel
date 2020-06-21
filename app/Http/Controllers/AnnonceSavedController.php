@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Response;
 use App\AnnonceSaved;
+use App\Annonce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +27,13 @@ class AnnonceSavedController extends Controller
             $count=$ads->count();
         return $count;
     }
+
+    public function savedDel(Request $request)
+    {
+        $ads=AnnonceSaved::where(['use_id'=>$request->input('user'),'ann_id'=>$request->input('ad')])->first();
+        AnnonceSaved::destroy($ads->id);
+        return response(null, Response::HTTP_OK);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -44,7 +52,22 @@ class AnnonceSavedController extends Controller
      */
     public function store(Request $request)
     {
-        $ad=new Ann;
+        
+        $ads=AnnonceSaved::where(['use_id'=>$request->input('user'),'ann_id'=>$request->input('ad')])->first();
+        $count=0;
+        if($ads)
+            $count=$ads->count();
+        if($count==0){
+            $check=Annonce::find($request->input('ad'));
+            if($check->use_id!=$request->input('user'))
+            {  
+            $ad=new AnnonceSaved();
+            $ad->use_id=$request->input('user');
+            $ad->ann_id=$request->input('ad');
+            $ad->save();
+            }
+        }
+        return response(null, Response::HTTP_OK);
     }
 
     /**
@@ -90,8 +113,9 @@ class AnnonceSavedController extends Controller
      * @param  \App\AnnonceSaved  $annonceSaved
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AnnonceSaved $annonceSaved)
+    public function destroy($sauvegarde)
     {
         //
+        return response(null, Response::HTTP_OK);
     }
 }
