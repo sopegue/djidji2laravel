@@ -24,4 +24,8 @@ Route::get('/message', function () {
     return view('message');
     
 });
+Route::get('/reset', function () {
+    return view('reset');
+    
+});
 Route::get('/sendmail','contactController@index')->name('sendmail');

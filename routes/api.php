@@ -28,11 +28,17 @@ Route::post('/annonce/testfile','AnnonceController@testfile');
     Route::resource('/user', 'UserController',['except' => ['index']]);
     Route::resource('/adresse', 'AdresseController');
     Route::resource('/verify', 'VerificationController');
+
+    Route::post('/checkcode','VerificationController@checkcode');
+
     Route::resource('/annonce', 'AnnonceController');
     Route::resource('/signalement', 'SignalerController');
     Route::resource('/sauvegarde', 'AnnonceSavedController');
     Route::resource('/reset', 'ResetController');
     Route::post('/user','UserController@index');
+
+    Route::post('/pwdreset','UserController@pwdreset');
+    
     Route::post('/user/UpdateUser','UserController@updateUser');
     Route::post('/user/UpdatePic','UserController@updatePic');
     Route::post('/annonce/look','AnnonceController@searchUs');

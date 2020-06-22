@@ -1,9 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\User;
 use App\Verification;
 use Illuminate\Http\Request;
+use App\Message;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\contact;
+use App\Mail\contactMail;
+use App\Mail\DemandeDeReinitialisationDeMotDePasse;
 
 class VerificationController extends Controller
 {
@@ -33,14 +40,60 @@ class VerificationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request)
+    public function store(Request $request)
     {
-        $verify=new Verification();
+        $user=User::where('email',$request->input('email'))->first();
+        $code=0;
+        if($user){
+            $checks=Verification::where('use_id',$user->id)->get();
+            if($checks){
+                foreach ($checks as $ver) {
+                    if($ver->verified==0)
+                        Verification::destroy($ver->id);
+                }
+            }
+            $check=new Verification();
+            $check->use_id=$user->id;
+            $code=rand(100000,999999);
+            $check->code=$code;
+            $check->verified=0;
+            $check->save();
 
-        //
+            // phase de l'envoi
+            Mail::to($request->input('email'))
+            ->send(new DemandeDeReinitialisationDeMotDePasse($code));
 
-        $verify->save();
-        return response(null, Response::HTTP_OK);
+        }
+        
+        return response($code, Response::HTTP_OK);
+    }
+    
+    public function checkcode(Request $request)
+    {
+        $user=User::where('email',$request->input('email'))->first();
+        $code=0;
+        if($user){
+            $checks=Verification::where('use_id',$user->id)->get();
+            if($checks){
+                foreach ($checks as $ver) {
+                    if($ver->verified==0)
+                        {
+                            if($ver->code==$request->input('code'))
+                            {
+                                $ver->verified=1;
+                                
+                                $code=45;
+
+                                $ver->save();
+                            }
+                            
+                        }
+                }
+            }
+
+        }
+        
+        return response($code, Response::HTTP_OK);
     }
 
     /**

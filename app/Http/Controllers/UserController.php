@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
+    public function pwdreset(Request $request)
+    {
+        $user=User::where('email',$request->input('email'))->first();
+        $newpwd=$request->input('password');
+        $user->password = Hash::make($newpwd);
+        $user->save();
+        return response(null, Response::HTTP_OK);
+    }
+
     public function pwdUpdate(Request $request)
     {
         $id=$request->input('user');
