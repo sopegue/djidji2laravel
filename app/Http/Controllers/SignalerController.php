@@ -44,6 +44,16 @@ class SignalerController extends Controller
         return response(null, Response::HTTP_OK);
     }
 
+    public function signalUser(Request $request/* id annonce*/)
+    {
+        $sign=new Signaler();
+        if($request->has('user')){
+            $sign->use_id=$request->input('user');
+        }
+        $sign->use_to_sig=$request->input('user_to');
+        $sign->save();
+        return response(null, Response::HTTP_OK);
+    }
     /**
      * Display the specified resource.
      *

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Annonce;
+use App\AdDel;
 use App\AnnonceSaved;
 use App\User;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +13,14 @@ use Illuminate\Http\Response;
 class AnnonceController extends Controller
 {
 
+    public function getNotifAd(Request $request)
+    {
+        $ad=Annonce::find($request->input('ad'));
+        if($ad){
+            return response($ad->jsonSerialize(), Response::HTTP_OK);
+        }
+        return response(null, Response::HTTP_OK);
+    }
     public function adtomod(Request $request)
     {
         $ads=Annonce::find($request->input('ad'));
@@ -21,6 +30,30 @@ class AnnonceController extends Controller
     }
     public function delMyAd(Request $request)
     {
+        $ad=Annonce::find($request->input('ad'));
+        $ads=Annonce::where('categorie',$ad->categorie)->get();
+        if($ads){
+            foreach ($ads as $value) {
+                $value->nbcateg=$value->nbcateg-1;
+                $value->save();
+            }
+        }
+        // $del=new AdDel();
+        // $del->use_id=$ad->use_id;
+        // $del->save();
+        $delee = new AdDel();
+        $delee->categorie=$ad->categorie;
+        $delee->souscateg=$ad->souscateg;
+        $delee->description=$ad->description;
+        $delee->titre=$ad->titre;
+        $delee->prix=$ad->prix;
+        $delee->tel=$ad->tel;
+        $delee->what=$ad->what;
+        $delee->ville=$ad->ville;
+        $delee->nbvues=$ad->nbvues;
+        $delee->pp=$ad->pp;
+        $delee->use_id=$ad->use_id;
+        $delee->save();
         Annonce::destroy($request->input('ad'));
         return response(null, Response::HTTP_OK);
     }
@@ -545,10 +578,22 @@ class AnnonceController extends Controller
         $new=$request->input('oldcateg');
         if($old!=$new){
             $count_categ=Annonce::where('categorie',$request->input('categ'))->count();
+            $categ=Annonce::where('categorie',$request->input('categ'))->get();
+            if($categ){
+                foreach ($categ as $value) {
+                    $value->nbcateg=$value->nbcateg+1;
+                    $value->save();
+                }
+            }
+
+            $categ=Annonce::where('categorie',$request->input('oldcateg'))->get();
+            if($categ){
+                foreach ($categ as $value) {
+                    $value->nbcateg=$value->nbcateg-1;
+                    $value->save();
+                }
+            }
             $ad->nbcateg=$count_categ + 1;
-        }
-        else{
-            $ad->nbcateg=$ad->nbcateg + 1;
         }
         if($request->hasFile('file')){
         //del oldfile
@@ -589,6 +634,13 @@ class AnnonceController extends Controller
     public function store(Request $request)
     {
         $count_categ=Annonce::where('categorie',$request->input('categ'))->count();
+        $categ=Annonce::where('categorie',$request->input('categ'))->get();
+        if($categ){
+            foreach ($categ as $value) {
+                $value->nbcateg=$value->nbcateg+1;
+                $value->save();
+            }
+        }
         //$count_userAd=Annonce::where('use_id',$request->input('userId'))->count();
         $ad = new Annonce();
         $ad->categorie=$request->input('categ');

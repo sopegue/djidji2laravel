@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Reset;
+use App\Seen;
 use Illuminate\Http\Request;
-
-class ResetController extends Controller
+use App\Annonce;
+use Illuminate\Http\Response;
+class SeenController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -33,13 +34,31 @@ class ResetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request)
+    public function store(Request $request)
     {
-        $reset = new Reset();
-
-        //
-
-        $reset->save();
+        $nbvue = Annonce::find($request->input('ad'));
+        if($nbvue){
+            if(!$request->has('self'))
+            {
+                $nbvue->nbvues=$nbvue->nbvues+1;
+                $nbvue->save();
+            }
+        }
+        //$seen->ann_id=$request->input('ad');
+        if($request->has('user')){
+            $seen=Seen::where(['ann_id'=>$request->input('ad'),'use_id'=>$request->input('user')])->first();
+            if($seen){
+                $seen->nbvue=$seen->nbvue+1;
+                $seen->save();
+            }
+            else{
+                $tosee=new Seen();
+                $tosee->ann_id=$request->input('ad');
+                $tosee->use_id=$request->input('user');
+                $tosee->nbvue=1;
+                $tosee->save();
+            }
+        }
         return response(null, Response::HTTP_OK);
     }
 

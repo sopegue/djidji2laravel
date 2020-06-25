@@ -98,6 +98,19 @@ class UserController extends Controller
         return response($user->jsonSerialize(), Response::HTTP_OK);
     }
 
+    public function indexs()
+    {
+        return response(User::all()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function useradmin()
+    {
+        $user=User::where('type','administrateur')->get();
+        if($user)
+            return response($user->jsonSerialize(), Response::HTTP_OK);
+        return response(null, Response::HTTP_OK);
+    }
+
     public function tStore(Request $request)
     {
         $user=User::where('email',$request->input('email'))->first();

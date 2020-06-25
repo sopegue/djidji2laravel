@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Signaler;
 use App\Message;
+use App\AdMess;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,110 @@ use App\Mail\contactMail;
 use App\Mail\MessageDeDjidji;
 class MessageController extends Controller
 {
+
+    public function checkNotif(Request $request)
+    {
+        $count=0;
+        $notif=Message::where('to_user',$request->input('user'))->get();
+        if($notif){
+            foreach ($notif as $value) {
+                if($value->seen==0)
+                {
+                    $count=100;
+                }
+            }
+        }
+        return response($count, Response::HTTP_OK);
+    }
+
+    public function getNotif(Request $request)
+    {
+    
+        $notif=Message::where('to_user',$request->input('user'))->get();
+        if($notif){
+            return response($notif->jsonSerialize(), Response::HTTP_OK);
+        }
+        return response(null, Response::HTTP_OK);
+    }
+
+    public function getMess(Request $request)
+    {
+    
+        $notif=AdMess::where('to_user',$request->input('user'))->get();
+        $count=0;
+        if($notif){
+            foreach ($notif as $value) {
+                foreach ($notif as $key) {
+                    if($value->use_id==$key->use_id)
+                    $count++;
+                }
+                $value["nb"]=$count;
+                $count=0;
+            }
+            return response($notif->jsonSerialize(), Response::HTTP_OK);
+        }
+        return response(null, Response::HTTP_OK);
+    }
+
+    public function notVue(Request $request)
+    {
+    
+        $notif=Message::where('to_user',$request->input('user'))->get();
+        if($notif){
+            foreach ($notif as $value) {
+                if($value->seen==0)
+                {
+                    $value->seen=1;
+                    $value->save();
+                }
+            }
+        }
+        return response(null, Response::HTTP_OK);
+    }
+    
+
+    public function checkNotifNb(Request $request)
+    {
+        $count=0;
+        $notif=Message::where('to_user',$request->input('user'))->get();
+        if($notif){
+            foreach ($notif as $value) {
+                if($value->seen==0)
+                {
+                    $count++;
+                }
+            }
+        }
+        return response($count, Response::HTTP_OK);
+    }
+    public function checkAdmNotifNb(Request $request)
+    {
+        $count=0;
+        $notif=Signaler::all();
+        if($notif){
+            foreach ($notif as $value) {
+                if($value->admseen==0)
+                {
+                    $count++;
+                }
+            }
+        }
+        return response($count, Response::HTTP_OK);
+    }
+    public function checkMessNb(Request $request)
+    {
+        $count=0;
+        $notif=AdMess::where('to_user',$request->input('user'))->get();
+        if($notif){
+            foreach ($notif as $value) {
+                if($value->seen==0)
+                {
+                    $count++;
+                }
+            }
+        }
+        return response($count, Response::HTTP_OK);
+    }
     public function sendMessage(Request $request)
     {
         $message=new Message();
@@ -26,6 +131,16 @@ class MessageController extends Controller
         $message->save();
         Mail::to($request->input('toemail'))
             ->send(new MessageDeDjidji($request));
+        return response(null, Response::HTTP_OK);
+    }
+    public function sendMessageAdmin(Request $request)
+    {
+        $message=new AdMess();
+        $message->use_id=$request->input('user');
+        $message->name=$request->input('name');
+        $message->content=$request->input('message');
+        $message->to_user=$request->input('to_user');
+        $message->save();
         return response(null, Response::HTTP_OK);
     }
     /**

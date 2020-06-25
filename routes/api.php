@@ -20,22 +20,38 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /*for test */
 
 Route::post('/annonce/testfile','AnnonceController@testfile');
+Route::post('/getNotifAd','AnnonceController@getNotifAd');
 
 /* end test */
 
     Route::post('/message/sending','MessageController@sendMessage');
+    Route::post('/message/sendingadmin','MessageController@sendMessageAdmin');
+    Route::post('/notVue','MessageController@notVue');
+    
+
+    Route::post('/checkNotif','MessageController@checkNotif');
+    Route::post('/checkNotifNb','MessageController@checkNotifNb');
+
+    Route::post('/checkAdmNotifNb','MessageController@checkAdmNotifNb');
+    Route::post('/checkMessNb','MessageController@checkMessNb');
+    Route::post('/getNotif','MessageController@getNotif');
+
+    Route::post('/getMess','MessageController@getMess');
     //Route::post('/signalement','MessageController@sendMessage');
     Route::resource('/user', 'UserController',['except' => ['index']]);
     Route::resource('/adresse', 'AdresseController');
+    Route::resource('/seen', 'SeenController');
     Route::resource('/verify', 'VerificationController');
 
     Route::post('/checkcode','VerificationController@checkcode');
-
+    Route::post('/contact', 'Contact_usController@contact');
     Route::resource('/annonce', 'AnnonceController');
+    Route::post('/signalementUser', 'SignalerController@signalUser');
     Route::resource('/signalement', 'SignalerController');
     Route::resource('/sauvegarde', 'AnnonceSavedController');
-    Route::resource('/reset', 'ResetController');
     Route::post('/user','UserController@index');
+    Route::get('/useradmin','UserController@useradmin');
+    Route::get('/user','UserController@indexs');
 
     Route::post('/pwdreset','UserController@pwdreset');
     
