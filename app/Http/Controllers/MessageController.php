@@ -39,6 +39,15 @@ class MessageController extends Controller
         return response(null, Response::HTTP_OK);
     }
 
+    public function getNotifAd()
+    {
+        $not=Signaler::all();
+        if($not){
+            return response($not->jsonSerialize(), Response::HTTP_OK);
+        }
+        return response(null, Response::HTTP_OK);
+    }
+
     public function getMess(Request $request)
     {
     
@@ -61,15 +70,21 @@ class MessageController extends Controller
     public function notVue(Request $request)
     {
     
-        $notif=Message::where('to_user',$request->input('user'))->get();
+        $notif=Message::find($request->input('notif'));
         if($notif){
-            foreach ($notif as $value) {
-                if($value->seen==0)
-                {
-                    $value->seen=1;
-                    $value->save();
-                }
-            }
+            $notif->seen=1;
+            $notif->save();
+        }
+        return response(null, Response::HTTP_OK);
+    }
+
+    public function notVueAdminn(Request $request)
+    {
+    
+        $notif=Signaler::find($request->input('notif'));
+        if($notif){
+            $notif->admseen=1;
+            $notif->save();
         }
         return response(null, Response::HTTP_OK);
     }

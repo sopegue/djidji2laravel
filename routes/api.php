@@ -21,12 +21,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/annonce/testfile','AnnonceController@testfile');
 Route::post('/getNotifAd','AnnonceController@getNotifAd');
+Route::post('/getNotifAdmin','MessageController@getNotifAd');
+
+Route::post('/getNotifContentAdmin','AnnonceController@getNotifAdContent');
 
 /* end test */
 
     Route::post('/message/sending','MessageController@sendMessage');
     Route::post('/message/sendingadmin','MessageController@sendMessageAdmin');
     Route::post('/notVue','MessageController@notVue');
+    Route::post('/notVueAdminn','MessageController@notVueAdminn');
     
 
     Route::post('/checkNotif','MessageController@checkNotif');
@@ -52,6 +56,7 @@ Route::post('/getNotifAd','AnnonceController@getNotifAd');
     Route::post('/user','UserController@index');
     Route::get('/useradmin','UserController@useradmin');
     Route::get('/user','UserController@indexs');
+    Route::get('/usersignale','UserController@usersignale');
 
     Route::post('/pwdreset','UserController@pwdreset');
     

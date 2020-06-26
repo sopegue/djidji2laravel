@@ -32,30 +32,60 @@ class AuthController extends Controller
             $extension=$file->getClientOriginalExtension();
             $pp="user.{$extension}";
             
-            $user = User::create([
+            if($request->has('type'))
+           { 
+               $user = User::create([
                 'email'    => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
                 'Nom'=>$request->input('name'),
                 'Prenom'=>$request->input('surname'),
                 'tel'=>$request->input('tel'),
+                'type'=>$request->input('type'),
                 'pp'=>$pp,
                 'ville'=>$request->input('ville'),
-            ]);
+            ]   );
+            }
+            else{
+                $user = User::create([
+                    'email'    => $request->input('email'),
+                    'password' => Hash::make($request->input('password')),
+                    'Nom'=>$request->input('name'),
+                    'Prenom'=>$request->input('surname'),
+                    'tel'=>$request->input('tel'),
+                    'pp'=>$pp,
+                    'ville'=>$request->input('ville'),
+                ]   );
+            }
             $new=User::where('email',$request->input('email'))->first();
             $file->storeAs('public/'.$new->id.'//profile/',$pp);
          
         }
         else{
             
-            $user = User::create([
+            if($request->has('type'))
+           { 
+               $user = User::create([
                 'email'    => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
                 'Nom'=>$request->input('name'),
                 'Prenom'=>$request->input('surname'),
                 'tel'=>$request->input('tel'),
-                'ville'=>$request->input('ville'),
+                'type'=>$request->input('type'),
                 'pp'=>'user.png',
-            ]);
+                'ville'=>$request->input('ville'),
+            ]   );
+            }
+            else{
+                $user = User::create([
+                    'email'    => $request->input('email'),
+                    'password' => Hash::make($request->input('password')),
+                    'Nom'=>$request->input('name'),
+                    'Prenom'=>$request->input('surname'),
+                    'tel'=>$request->input('tel'),
+                    'pp'=>'user.png',
+                    'ville'=>$request->input('ville'),
+                ]   );
+            }
             $new=User::where('email',$request->input('email'))->first();
             Storage::copy('public/images/profile/user.png', 'public/'.$new->id.'//profile/user.png');
             //$file->storeAs('public/'.$new->id.'//profile/',$pp);

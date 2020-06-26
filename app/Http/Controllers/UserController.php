@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Signaler;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -13,6 +14,20 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
 
+    public function usersignale()
+    {
+        $us=Signaler::whereNotNull('use_to_sig')->get();
+        $idd=array();
+        if($us){
+            foreach ($us as $value) {
+                array_push($idd,$value->use_to_sig);
+            }
+            $user=User::whereIn('id', $idd)->get();
+            if($user)
+                return response($user->jsonSerialize(), Response::HTTP_OK);
+        }
+        return response(null, Response::HTTP_OK);
+    }
     public function pwdreset(Request $request)
     {
         $user=User::where('email',$request->input('email'))->first();

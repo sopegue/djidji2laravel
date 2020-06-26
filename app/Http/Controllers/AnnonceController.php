@@ -13,6 +13,18 @@ use Illuminate\Http\Response;
 class AnnonceController extends Controller
 {
 
+    public function getNotifAdContent(Request $request)
+    {
+        if($request->has('user_to')){
+            $user=User::find($request->input('user_to'));
+            return response($user->jsonSerialize(), Response::HTTP_OK);
+        }
+        if($request->has('ad')){
+            $ad=Annonce::find($request->input('ad'));
+            return response($ad->jsonSerialize(), Response::HTTP_OK);
+        }
+        return response(null, Response::HTTP_OK);
+    }
     public function getNotifAd(Request $request)
     {
         $ad=Annonce::find($request->input('ad'));
