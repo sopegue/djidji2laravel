@@ -14,6 +14,27 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
 
+    public function unblockuser(Request $request)
+    {
+        $user=User::find($request->input('user'));
+        if($user){
+            $user->isblocked=0;
+            $user->adm_id=$request->input('me');
+            $user->save();
+        }
+        return response(null, Response::HTTP_OK);
+    }
+
+    public function blockuser(Request $request)
+    {
+        $user=User::find($request->input('user'));
+        if($user){
+            $user->isblocked=1;
+            $user->adm_id=$request->input('me');
+            $user->save();
+        }
+        return response(null, Response::HTTP_OK);
+    }
     public function usersignale()
     {
         $us=Signaler::whereNotNull('use_to_sig')->get();
@@ -135,8 +156,17 @@ class UserController extends Controller
     }
     public function checkToken(Request $request)
     {
+
         $user=User::where('token',$request->input('token'))->first();
-        return response($user->jsonSerialize(), Response::HTTP_OK);
+        if($user){
+            if($user->isblocked==0){
+                return response($user->jsonSerialize(), Response::HTTP_OK);
+            }else{
+                $user->token='';
+            }
+        }
+        return response(null, Response::HTTP_OK);
+
     }
     /**
      * Show the form for creating a new resource.

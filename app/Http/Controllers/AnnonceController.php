@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Annonce;
 use App\AdDel;
+use App\Signaler;
 use App\AnnonceSaved;
 use App\User;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,41 @@ use Illuminate\Http\Response;
 class AnnonceController extends Controller
 {
 
+    public function adssignalenb()
+    {
+        $us=Signaler::whereNotNull('ann_id')->get();
+        $idd=array();
+        $user=0;
+        if($us){
+            foreach ($us as $value) {
+                array_push($idd,$value->ann_id);
+            }
+            $user=Annonce::whereIn('id', $idd)->get()->count();
+        }
+        return response($user, Response::HTTP_OK);
+    }
+
+    public function annoncesignalee()
+    {
+        $us=Signaler::whereNotNull('ann_id')->get();
+        $idd=array();
+        if($us){
+            foreach ($us as $value) {
+                array_push($idd,$value->ann_id);
+            }
+            $user=Annonce::whereIn('id', $idd)->get();
+            if($user)
+                return response($user->jsonSerialize(), Response::HTTP_OK);
+        }
+        return response(null, Response::HTTP_OK);
+    }
+
+    public function adallnb()
+    {
+        $user=0;
+        $user=Annonce::all()->count();
+        return response($user, Response::HTTP_OK);
+    }
     public function getNotifAdContent(Request $request)
     {
         if($request->has('user_to')){
@@ -65,6 +101,9 @@ class AnnonceController extends Controller
         $delee->nbvues=$ad->nbvues;
         $delee->pp=$ad->pp;
         $delee->use_id=$ad->use_id;
+        if($request->has('admin')){
+            $delee->adm_id=$request->input('admin');
+        }
         $delee->save();
         Annonce::destroy($request->input('ad'));
         return response(null, Response::HTTP_OK);

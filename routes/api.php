@@ -23,23 +23,36 @@ Route::post('/annonce/testfile','AnnonceController@testfile');
 Route::post('/getNotifAd','AnnonceController@getNotifAd');
 Route::post('/getNotifAdmin','MessageController@getNotifAd');
 
+Route::post('/blockuser','UserController@blockuser');
+Route::post('/unblockuser','UserController@unblockuser');
+
 Route::post('/getNotifContentAdmin','AnnonceController@getNotifAdContent');
 
 /* end test */
 
+    Route::get('/adssignalenb','AnnonceController@adssignalenb');
+
+    Route::get('/getStat','StatController@index');
+    
+    Route::get('/adallnb','AnnonceController@adallnb');
+    Route::get('/annoncesignalee','AnnonceController@annoncesignalee');
     Route::post('/message/sending','MessageController@sendMessage');
     Route::post('/message/sendingadmin','MessageController@sendMessageAdmin');
     Route::post('/notVue','MessageController@notVue');
+    Route::post('/contactusvue','MessageController@contactusvue');
     Route::post('/notVueAdminn','MessageController@notVueAdminn');
     
-
+    Route::post('/getAdmMessageRespond','MessageController@getAdmMessageRespond');
+    Route::post('/getAdmMessage','MessageController@getAdmMessage');
+    Route::get('/incrementVisit','MessageController@incrementVisit');
     Route::post('/checkNotif','MessageController@checkNotif');
     Route::post('/checkNotifNb','MessageController@checkNotifNb');
 
     Route::post('/checkAdmNotifNb','MessageController@checkAdmNotifNb');
     Route::post('/checkMessNb','MessageController@checkMessNb');
     Route::post('/getNotif','MessageController@getNotif');
-
+    Route::get('/getContactUs','MessageController@getContactUs');
+    Route::get('/getContactUsNb','MessageController@getContactUsNb');
     Route::post('/getMess','MessageController@getMess');
     //Route::post('/signalement','MessageController@sendMessage');
     Route::resource('/user', 'UserController',['except' => ['index']]);
