@@ -29,9 +29,11 @@ class UserController extends Controller
     {
         $user=User::find($request->input('user'));
         if($user){
-            $user->isblocked=1;
-            $user->adm_id=$request->input('me');
-            $user->save();
+            if($user->type=='particulier'){
+                $user->isblocked=1;
+                $user->adm_id=$request->input('me');
+                $user->save();
+            }
         }
         return response(null, Response::HTTP_OK);
     }
