@@ -91,9 +91,9 @@ h3,.goDjidjia,.row-2{
 <h4>Votre annonce</h4>
 <div class="ads">
     <div class="row-1">
-    <a class="goDjidjia" title="Cliquez pour voir votre annonce" href="http://127.0.0.1:8080/#/annonce/104">
+    <a class="goDjidjia" title="Cliquez pour voir votre annonce" href="<?php echo 'http://127.0.0.1:8080/#/annonce/'.$details['id']?>">
       <div class="ads-img">
-        <img class="ad-image" src="https://i.ibb.co/hsTJRXY/48425860-1093810680798556-3162028100967989248-n.jpg"/>
+        <img class="ad-image" src="https://i.ibb.co/Kwfc6h5/KFFPJLwfxfv-SWd-Nc-GQc3-BXNw-Euro-UYc0-KSry-Vp-Wy.jpg"/>
       </div>   
     </a>
     </div>
